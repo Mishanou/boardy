@@ -7,4 +7,4 @@
 ![Настроенные имя и почта](screenshots/07-git-config.png)
 ![Ответ от гитхаба](screenshots/08-ssh-github.png)
 ![Репозиторий на GitHub с папками Lab/](screenshots/09-github-repo.png)
-![Созданный PR на GitHub (видно diff)](10-pull-request.png)
+![Созданный PR на GitHub (видно diff)](screenshots/10-pull-request.png)
