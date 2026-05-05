@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once __DIR__ . '/partials/session.php';
 ?>
 <!DOCTYPE html>
 <html lang="ru">

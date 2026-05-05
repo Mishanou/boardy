@@ -1,6 +1,7 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
 from database import get_db
+from auth import get_current_user
 import aiomysql
 
 router = APIRouter()
@@ -32,7 +33,6 @@ async def get_comments(post_id: int):
     finally:
         conn.close()
 
-    # datetime → строка (JSON не умеет datetime)
     for item in items:
         item['created_at'] = str(item['created_at'])
 
@@ -40,7 +40,7 @@ async def get_comments(post_id: int):
 
 
 @router.post('/posts/{post_id}/comments', status_code=201)
-async def create_child(post_id: int, data: ChildCreate):
+async def create_comment(post_id: int, data: ChildCreate, user = Depends(get_current_user)):
     if not data.body.strip():
         raise HTTPException(status_code=422, detail='Текст пустой')
     
@@ -52,7 +52,7 @@ async def create_child(post_id: int, data: ChildCreate):
                 raise HTTPException(status_code=404, detail='Пост не найден')
             await cur.execute(
                 'INSERT INTO comments (body, post_id, author_id) VALUES (%s, %s, %s)',
-                (data.body, post_id, 2)
+                (data.body, post_id, user['user_id'])
             )
             await conn.commit()
             new_id = cur.lastrowid
@@ -63,7 +63,7 @@ async def create_child(post_id: int, data: ChildCreate):
 
 
 @router.put('/comments/{comment_id}')
-async def update_child(comment_id: int, data: ChildUpdate):
+async def update_comment(comment_id: int, data: ChildUpdate, user = Depends(get_current_user)):
     if not data.body.strip():
         raise HTTPException(status_code=422, detail='Текст пустой')
     
@@ -71,8 +71,8 @@ async def update_child(comment_id: int, data: ChildUpdate):
     try:
         async with conn.cursor() as cur:
             await cur.execute(
-                'UPDATE comments SET body = %s WHERE id = %s',
-                (data.body, comment_id)
+                'UPDATE comments SET body = %s WHERE id = %s AND author_id = %s',
+                (data.body, comment_id, user['user_id'])
             )
             if cur.rowcount == 0:
                 raise HTTPException(status_code=404, detail='Запись не найдена')
@@ -84,11 +84,14 @@ async def update_child(comment_id: int, data: ChildUpdate):
 
 
 @router.delete('/comments/{comment_id}', status_code=204)
-async def delete_child(comment_id: int):
+async def delete_comment(comment_id: int, user = Depends(get_current_user)):
     conn = await get_db()
     try:
         async with conn.cursor() as cur:
-            await cur.execute('DELETE FROM comments WHERE id = %s', (comment_id,))
+            await cur.execute(
+                'DELETE FROM comments WHERE id = %s AND author_id = %s',
+                (comment_id, user['user_id'])
+            )
             if cur.rowcount == 0:
                 raise HTTPException(status_code=404, detail='Запись не найдена')
             await conn.commit()

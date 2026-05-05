@@ -6,21 +6,21 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title='Boardy API', version='0.2.0')
 
-app.include_router(comments.router)
+app.include_router(comments.router, prefix="/api")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://novokshon.ai-info.ru"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-@app.get('/api/status')
+@app.get('/status')
 async def status():
     return {'status': 'ok', 'time': str(datetime.now())}
 
-@app.get('/api/messages')
+@app.get('/messages')
 async def get_messages():
     conn = await get_db()
     async with conn.cursor(aiomysql.DictCursor) as cur:
@@ -38,7 +38,7 @@ async def get_messages():
 
     return {'messages': messages, 'count': len(messages)}
 
-@app.get('/api/users')
+@app.get('/users')
 async def get_users():
     conn = await get_db()
     async with conn.cursor(aiomysql.DictCursor) as cur:

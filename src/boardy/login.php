@@ -58,7 +58,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <input type="password" id="password" name="password" required>
 
             <button type="submit">Войти</button>
+
+            <div class="oauth-divider">или</div>
+
+            <a href="/oauth-github.php" class="github-login">
+                <span class="github-icon">●</span>
+                Войти через GitHub
+            </a>
         </form>
+
+        
 
         <div class="auth-link">
             Нет аккаунта? <a href="/register.php">Регистрация</a>
