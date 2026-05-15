@@ -1,12 +1,14 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from datetime import datetime
 import aiomysql
 from routers import comments
+from routers import ws
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title='Boardy API', version='0.2.0')
 
 app.include_router(comments.router, prefix="/api")
+app.include_router(ws.router)
 
 app.add_middleware(
     CORSMiddleware,
@@ -15,6 +17,12 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.post('/internal/broadcast')
+async def internal_broadcast(request: Request):
+    data = await request.json()
+    await ws.manager.broadcast({'type': 'new_post', 'post': data})
+    return {'ok': True}
 
 @app.get('/status')
 async def status():
