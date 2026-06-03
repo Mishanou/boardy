@@ -1,7 +1,7 @@
 import jwt
 from fastapi import Header, HTTPException
 
-SECRET_KEY = 'TheVerySecretKey'
+PUBLIC_KEY = open('/opt/boardy-api/oauth-public.key').read()
 
 
 async def get_current_user(authorization: str = Header(None)):
@@ -11,7 +11,7 @@ async def get_current_user(authorization: str = Header(None)):
     token = authorization.removeprefix('Bearer ').strip()
     
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
+        payload = jwt.decode(token, PUBLIC_KEY, algorithms=['RS256'], options={'verify_aud': False})
         return payload
     except jwt.ExpiredSignatureError:
         raise HTTPException(status_code=401, detail='Token expired')
