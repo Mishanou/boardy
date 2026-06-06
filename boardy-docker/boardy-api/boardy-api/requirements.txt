@@ -1,0 +1,22 @@
+# Основной веб-фреймворк и сервер
+fastapi>=0.115.0
+uvicorn[standard]>=0.30.0
+
+# Валидация данных и настройки
+pydantic>=2.9.0
+pydantic-settings>=2.4.0
+
+# Асинхронная работа с базой данных MySQL
+aiomysql>=0.2.0
+SQLAlchemy>=2.0.0
+
+# Асинхронная работа с Redis (Замена устаревшего aioredis)
+redis>=5.0.0
+
+# Работа с токенами (JWT) и безопасностью
+PyJWT==2.10.1
+cryptography>=42.0.0
+passlib[bcrypt]>=1.7.4
+
+# Утилиты
+python-multipart>=0.0.9

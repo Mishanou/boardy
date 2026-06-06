@@ -1,0 +1,47 @@
+# Зависимости и пакеты (они должны устанавливаться внутри контейнера)
+/vendor
+/node_modules
+/public/build
+
+# Конфигурационные файлы с секретами (используются переменные окружения)
+.env
+.env.production
+.env.local
+
+# Системные файлы контроля версий и IDE
+.git
+.github
+.gitignore
+.gitattributes
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# Логи и кэш приложения Laravel
+/storage/logs/*.log
+/storage/framework/cache/data/*
+/storage/framework/sessions/*
+/storage/framework/views/*.php
+/bootstrap/cache/*.php
+
+# Кэш тестов и инструменты отладки
+.phpunit.result.cache
+.phpunit.cache
+Homestead.json
+Homestead.yaml
+_ide_helper*.php
+.phpstan
+.php_cs.cache
+
+# Кэш сборщиков фронтенда и логи ошибок
+npm-debug.log
+yarn-error.log
+.eslintcache
+
+# Системные файлы операционных систем
+.DS_Store
+Thumbs.db
